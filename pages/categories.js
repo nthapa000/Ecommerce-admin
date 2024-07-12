@@ -1,8 +1,10 @@
 import Layout from "@/components/Layout";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { withSwal } from "react-sweetalert2";
 
-export default function CategoriesPage() {
+function Categories({ swal }) {
+  const [editedCategory, setEditedCategory] = useState(null);
   const [name, setName] = useState("");
   //   Fetching all the categories
   const [parentCategory, setParentCategory] = useState("");
@@ -18,14 +20,51 @@ export default function CategoriesPage() {
   }
   async function saveCategory(ev) {
     ev.preventDefault();
-    await axios.post("/api/categories", { name, parentCategory });
+    if (editedCategory) {
+      await axios.put("/api/categories", {
+        name,
+        parentCategory,
+        _id: editedCategory._id,
+      });
+      setEditedCategory(null);
+    } else {
+      await axios.post("/api/categories", { name, parentCategory:parentCategory || null });
+    }
     setName("");
     fetchCategories();
+  }
+
+  function editCategory(category) {
+    setEditedCategory(category);
+    setName(category.name);
+    setParentCategory(category.parent?._id);
+  }
+  function deleteCategory(category){
+    swal.fire({
+        title:'Are you sure?',
+        text:`Do you want to delete ${category.name}`,
+        showCancelButton:true,
+        cancelButtonText:'Cancel',
+        confirmButtonText:'Yes,Delete!',
+        confirmButtonColor:'#d55',
+        reverseButtons:true,
+    }).then(async result=>{
+        // we can check by console.log
+        if(result.isConfirmed){
+            const {_id}= category;
+            await axios.delete('/api/categories?_id='+_id)
+            fetchCategories();
+        }
+    })
   }
   return (
     <Layout>
       <h1>Categories</h1>
-      <label>New Category Name</label>
+      <label>
+        {editedCategory
+          ? `Edit category ${editedCategory.name}`
+          : `Create new category`}
+      </label>
       <form onSubmit={saveCategory} className="flex gap-1">
         <input
           className="mb-0"
@@ -67,8 +106,18 @@ export default function CategoriesPage() {
                 <td>{category.name}</td>
                 <td>{category?.parent?.name}</td>
                 <td>
-                    <button className="btn-primary ml-1">Edit</button>
-                    <button className="btn-primary ml-1">Delete</button>
+                  <button
+                    onClick={() => editCategory(category)}
+                    className="btn-primary ml-1"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteCategory(category)}
+                    className="btn-primary ml-1"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -77,3 +126,5 @@ export default function CategoriesPage() {
     </Layout>
   );
 }
+
+export default withSwal(({ swal }, ref) => <Categories swal={swal} />);
