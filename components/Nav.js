@@ -2,10 +2,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function Nav() {
-  const inactiveLink = 'flex gap-1 p-1';
-  const activeLink = inactiveLink +' bg-white text-blue-900 rounded-l-lg';
+  const inactiveLink = "flex gap-1 p-1";
+  const activeLink = inactiveLink + " bg-white text-blue-900 rounded-l-lg";
   const router = useRouter();
-  const {pathname} = router;
+  const { pathname } = router;
 
   return (
     <aside className="text-white p-4 pr-0">
@@ -29,7 +29,10 @@ export default function Nav() {
       </Link>
 
       <nav className="flex flex-col gap-2">
-        <Link href={"/"} className={pathname==='/'?activeLink:inactiveLink}>
+        <Link
+          href={"/"}
+          className={pathname === "/" ? activeLink : inactiveLink}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -46,7 +49,10 @@ export default function Nav() {
           </svg>
           Dashboard
         </Link>
-        <Link href={"/products"} className={pathname.includes('/products') ? activeLink:inactiveLink}>
+        <Link
+          href={"/products"}
+          className={pathname.includes("/products") ? activeLink : inactiveLink}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -63,7 +69,35 @@ export default function Nav() {
           </svg>
           Products
         </Link>
-        <Link href={"/orders"} className={pathname.includes('/orders') ? activeLink:inactiveLink}>
+        <Link
+          href={"/categories"}
+          className={pathname.includes("/categories") ? activeLink : inactiveLink}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 6h.008v.008H6V6Z"
+            />
+          </svg>
+          Categories
+        </Link>
+        <Link
+          href={"/orders"}
+          className={pathname.includes("/orders") ? activeLink : inactiveLink}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -80,7 +114,10 @@ export default function Nav() {
           </svg>
           Orders
         </Link>
-        <Link href={"/settings"} className={pathname.includes('/settings') ? activeLink:inactiveLink}>
+        <Link
+          href={"/settings"}
+          className={pathname.includes("/settings") ? activeLink : inactiveLink}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
