@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import { ReactSortable } from "react-sortablejs";
 
@@ -10,20 +10,29 @@ export default function ProductForm({
   description: existingDescription,
   price: existingPrice,
   images:existingImages,
+  category:assignedCategory
 }) {
   const [title, setTitle] = useState(existingTitle || "");
   const [description, setDescription] = useState(existingDescription || "");
+//   The choosen category
+  const [category,setCategory]=useState(assignedCategory||'');
   const [price, setPrice] = useState(existingPrice || "");
   const [images,setImages] = useState(existingImages || []);
   const [goToProducts, setGoToProducts] = useState(false);
   const [isUploading,setIsUploading] = useState(false);
-
+  const [categories,setCategories] = useState([]);
   const router = useRouter();
+  useEffect(() =>{
+    axios.get('/api/categories').then(result => {
+        setCategories(result.data);
+    })
+  },[])
 
   async function saveProduct(ev) {
     // We need to send request to api will do through axios
     ev.preventDefault();
-    const data = { title, description, price,images };
+    // only category id and now handle it in api
+    const data = { title, description, price,images,category };
     if (_id) {
       // update we will also need the id
       await axios.put("/api/products", { ...data, _id });
@@ -68,6 +77,16 @@ function updateImagesOrder(images){
         value={title}
         onChange={(ev) => setTitle(ev.target.value)}
       />
+      <label>Category</label>
+      {/* Now we want that as we click on the save button we should be able to send the product to the saveProduct function */}
+      <select value={category} onChange={ev => setCategory(ev.target.value)}>
+        {/* we need a state to fetch categories also */}
+        <option value="">Uncategorized</option>
+        {categories.length >0 && categories.map(c => (
+            <option key={c._id} value={c._id}>{c.name}</option>
+        ))}
+
+      </select>
       <label>Photos</label>
       <div className="mb-2 flex flex-wrap gap-1 ">
         {/* had to convert it to boolean */}
