@@ -30,6 +30,7 @@ function Categories({ swal }) {
         })),
     }
     if (editedCategory) {
+      data._id = editedCategory._id;
       await axios.put("/api/categories",data);
       setEditedCategory(null);
     } else {
@@ -45,7 +46,10 @@ function Categories({ swal }) {
     setEditedCategory(category);
     setName(category.name);
     setParentCategory(category.parent?._id);
-    setProperties(categories.properties);
+    setProperties(category.properties.map(({name,values}) =>({
+        name,
+        values:values.join(',')
+    }) ));
   }
   function deleteCategory(category) {
     swal
@@ -145,7 +149,7 @@ function Categories({ swal }) {
               <div className="flex gap-1 mb-2" key={property._id}>
                 <input
                   type="text"
-                  value={property.value}
+                  value={property.name}
                   className="mb-0"
                   onChange={(ev) =>
                     handlePropertyNameChange(index, property, ev.target.value)
@@ -154,7 +158,7 @@ function Categories({ swal }) {
                 />
                 <input
                   type="text"
-                  value={property.value}
+                  value={property.values}
                   className="mb-0"
                   onChange={(ev) =>
                     handlePropertyValueChange(index, property, ev.target.value)
@@ -162,7 +166,7 @@ function Categories({ swal }) {
                   placeholder="values, comma separated"
                 />
                 <button
-                  className="btn-default "
+                  className="btn-red"
                   onClick={() => removeProperty(index)}
                   type="button"
                 >
@@ -180,6 +184,7 @@ function Categories({ swal }) {
                 setEditedCategory(null);
                 setName('');
                 setParentCategory('');
+                setProperties([])
               }}
               className="btn-default"
             >
