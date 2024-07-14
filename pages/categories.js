@@ -23,7 +23,7 @@ function Categories({ swal }) {
     ev.preventDefault();
     const data = {
         name,
-        parentCategory,
+        parentCategory:parentCategory || null,
         properties:properties.map(p => ({
             name:p.name,
             values:p.values.split(','),

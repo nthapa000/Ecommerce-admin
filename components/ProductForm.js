@@ -34,7 +34,7 @@ export default function ProductForm({
     // We need to send request to api will do through axios
     ev.preventDefault();
     // only category id and now handle it in api
-    const data = { title, description, price, images, category,properties:productProperties };
+    const data = { title, description, price, images, category:category || null,properties:productProperties };
     if (_id) {
       // update we will also need the id
       await axios.put("/api/products", { ...data, _id });
@@ -115,9 +115,10 @@ export default function ProductForm({
       </select>
       {propertiesToFill.length > 0 &&
         propertiesToFill.map((p) => (
-          <div key={p.name} className="flex gap-1">
-            <div>{p.name}</div>
-            {console.log(p)}
+          <div key={p.name} className="">
+            <label>{p.name[0].toUpperCase()+p.name.substring(1)}</label>
+            {/* {console.log(p)} */}
+            <div>
             <select value={productProperties[p.name]} onChange={(ev) => setProductProp(p.name, ev.target.value)}>
               {Array.isArray(p.values) ? (
                 p.values.map((v, index) => (
@@ -129,6 +130,7 @@ export default function ProductForm({
                 <option disabled>No values available</option>
               )}
             </select>
+            </div>
           </div>
         ))}
       <label>Photos</label>
@@ -141,7 +143,7 @@ export default function ProductForm({
         >
           {!!images?.length &&
             images.map((link) => (
-              <div key={link} className=" h-24">
+              <div key={link} className=" h-24 bg-white ">
                 <img src={link} alt="" className="rounded-lg" />
                 {/* {link} I want it as images */}
               </div>
@@ -153,7 +155,7 @@ export default function ProductForm({
           </div>
         )}
         {/* We want to display all the photos and know the question is how we know how many photos we have */}
-        <label className=" w-24 h-24  text-center flex flex-col items-center justify-center text-gray-500 rounded-lg bg-gray-200 cursor-pointer">
+        <label className=" w-24 h-24  text-center flex flex-col items-center justify-center text-primary rounded-sm bg-white shadow-sm border border-gray-200 cursor-pointer ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
